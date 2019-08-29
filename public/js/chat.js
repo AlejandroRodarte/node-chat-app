@@ -4,11 +4,15 @@
 // the client socket object
 const socket = io();
 
-// target the form and the input
+// target required elements
 const $msgForm = document.querySelector('#msg-form');
 const $msg = document.querySelector('#msg');
 const $msgSubmit = document.querySelector('#msg-submit')
 const $sendLocation = document.querySelector('#send-location');
+const $messages = document.querySelector('#messages');
+
+// target templates
+const msgTemplate = document.querySelector('#message-template').innerHTML;
 
 // event on submission: emit 'sendMessage' event with the input value
 $msgForm.addEventListener('submit', e => {
@@ -78,5 +82,14 @@ $sendLocation.addEventListener('click', () => {
 
 // listen for the 'message' event and log the message
 socket.on('message', (msg) => {
+
     console.log(msg);
+
+    // get html from the message template, pass an object which identifies
+    // the dynamic variables to receive some value
+    const html = Mustache.render(msgTemplate, { msg });
+
+    // insert the rendered html into the messages div
+    $messages.insertAdjacentHTML('beforeend', html);
+
 });
