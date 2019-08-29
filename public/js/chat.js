@@ -11,8 +11,24 @@ const sendLocation = document.querySelector('#send-location');
 
 // event on submission: emit 'sendMessage' event with the input value
 msgForm.addEventListener('submit', e => {
+
     e.preventDefault();
-    socket.emit('sendMessage', msg.value);
+
+    // send message for server to process
+    // besides the message content, we add a callback argument so the server can call it
+    // and we can receive feedback from it
+    socket.emit('sendMessage', msg.value, err => {
+
+        // the callback, check for a string error message due to profanity
+        if (err) {
+            return console.log(err);
+        }
+
+        // no profanity: inform the message has been delivered
+        console.log('Message delivered!');
+
+    });
+
 });
 
 // when the 'send location' button is clicked
@@ -31,6 +47,10 @@ sendLocation.addEventListener('click', () => {
         socket.emit('sendLocation', {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude
+        }, () => {
+            // callback called by the server: acknowledge client location has been
+            // processed and shared properly
+            console.log('Location shared!');
         });
 
     });

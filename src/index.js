@@ -2,6 +2,7 @@ const express = require('express');
 const http = require('http');
 const path = require('path');
 const socketio = require('socket.io');
+const Filter = require('bad-words');
 
 // express app
 const app = express();
@@ -31,14 +32,30 @@ io.on('connection', (socket) => {
     // use socket.broadcast() to emit an event to all clients but that particular connection
     socket.broadcast.emit('message', 'A new user has entered!');
 
-    // wait for particular client to send message and broadcast for all clients to see
-    socket.on('sendMessage', msg => {
+    // wait for particular client to send message
+    // besides the payload, we declared on chat.js a callback to run from here
+    socket.on('sendMessage', (msg, callback) => {
+
+        const filter = new Filter();
+
+        // check for profanity: if exists, use the callback to run client code
+        // with an error message
+        if (filter.isProfane(msg)) {
+            return callback('Profanity is not allowed!');
+        }
+
+        // no profanity: emit the message to everyone and call the callback without any argument
+        // just for the sake of acknowledgement
         io.emit('message', msg);
+        callback();
+
     });
 
     // listen for the 'sendLocation' event and emit a new message for all users to know
-    socket.on('sendLocation', ({ latitude, longitude }) => {
+    // besides the payload, we set up a callback on the client for acknowledgement
+    socket.on('sendLocation', ({ latitude, longitude }, callback) => {
         io.emit('message', `https://google.com/maps?q=${latitude},${longitude}`);
+        callback();
     });
 
     // register event for when that particular user disconnects
