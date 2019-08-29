@@ -51,10 +51,10 @@ io.on('connection', (socket) => {
 
     });
 
-    // listen for the 'sendLocation' event and emit a new message for all users to know
+    // listen for the 'sendLocation' event and emit a new 'locationMessage' event for all users to know
     // besides the payload, we set up a callback on the client for acknowledgement
     socket.on('sendLocation', ({ latitude, longitude }, callback) => {
-        io.emit('message', `https://google.com/maps?q=${latitude},${longitude}`);
+        io.emit('locationMessage', `https://google.com/maps?q=${latitude},${longitude}`);
         callback();
     });
 

@@ -41,12 +41,28 @@
             Send location
         </button>
 
+        <!-- dynamic template for chat messages -->
         <script id="message-template",
                 type="text/html">
 
             <div>
                 <p>
                     {{ msg }}
+                </p>    
+            </div>
+
+        </script>
+
+        <!-- dynamic template for location messages -->
+        <script id="location-template",
+                type="text/html">
+
+            <div>
+                <p>
+                    <a href="{{ url }}"
+                        target="_blank">
+                        My current location
+                    </a>
                 </p>    
             </div>
 
