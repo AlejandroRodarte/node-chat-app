@@ -4,17 +4,17 @@
 // the client socket object
 const socket = io();
 
-// the server fires of an 'updatedCount' event, so we use socket.on() to register such event and
-// we can react to it as clients
-// the 'updatedCount' event emits a 'count' number, so we receive it as an argument in the callback
-socket.on('countUpdated', (count) => {
-    console.log('The count has been updated!' + count);
+// target the form and the input
+const msgForm = document.querySelector('#msg-form');
+const msg = document.querySelector('#msg');
+
+// event on submission: emit 'sendMessage' event with the input value
+msgForm.addEventListener('submit', e => {
+    e.preventDefault();
+    socket.emit('sendMessage', msg.value);
 });
 
-document.querySelector('#increment').addEventListener('click', (e) => {
-
-    // use socket.emit() to emit an event from the client so the server can respond and execute some code
-    // from the server side
-    socket.emit('increment');
-
+// listen for the 'message' event and log the message
+socket.on('message', (msg) => {
+    console.log(msg);
 });

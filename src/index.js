@@ -21,27 +21,24 @@ const publicDir = path.join(__dirname, '..', 'public');
 // set the dir for Express to acknowledge
 app.use(express.static(publicDir));
 
-let count = 0;
-
 // connection() callback runs each time a new client is connected
 // where the 'socket' argument contains information about that client connection
 io.on('connection', (socket) => {
 
-    // similar to Angular, emit() a 'countUpdated' for the subscribers (clients) to listen to
-    // and run some code on their side
-    // the second argument is the data to send with the event trigger and we can access it on
-    // the client callback function in its on() method
-    socket.emit('countUpdated', count);
+    // emit welcome message for particular user
+    socket.emit('message', 'Welcome!');
 
-    // socket.on() to listen when the particular client socket emits an 'increment' event
-    socket.on('increment', () => {
+    // use socket.broadcast() to emit an event to all clients but that particular connection
+    socket.broadcast.emit('message', 'A new user has entered!');
 
-        // increment the count
-        count++;
+    // wait for particular client to send message and broadcast for all clients to see
+    socket.on('sendMessage', msg => {
+        io.emit('message', msg);
+    });
 
-        // emit the new count value to ALL clients with io.emit()
-        io.emit('countUpdated', count);
-
+    // register event for when that particular user disconnects
+    socket.on('disconnect', () => {
+        io.emit('message', 'A user has left!');
     });
 
 });

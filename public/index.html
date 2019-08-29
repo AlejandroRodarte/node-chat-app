@@ -18,9 +18,19 @@
             Chat App
         </h1>
 
-        <button id="increment">
-            +1
-        </button>
+        <form id="msg-form">
+
+            <input  type="text" 
+                    name="msg" 
+                    id="msg"
+                    placeholder="Message">
+            
+            <button type="submit">
+                Send
+            </button>
+
+        </form>
+
 
         <!-- client side version of the socket.io library -->
         <!-- our client-side JS code will have access to the library to set up a communication with the server -->
