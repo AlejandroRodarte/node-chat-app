@@ -3,6 +3,7 @@ const http = require('http');
 const path = require('path');
 const socketio = require('socket.io');
 const Filter = require('bad-words');
+const { generateMessage } = require('./utils/messages');
 
 // express app
 const app = express();
@@ -26,11 +27,11 @@ app.use(express.static(publicDir));
 // where the 'socket' argument contains information about that client connection
 io.on('connection', (socket) => {
 
-    // emit welcome message for particular user
-    socket.emit('message', 'Welcome!');
+    // emit welcome message for particular user (now with the timestamp)
+    socket.emit('message', generateMessage('Welcome!'));
 
     // use socket.broadcast() to emit an event to all clients but that particular connection
-    socket.broadcast.emit('message', 'A new user has entered!');
+    socket.broadcast.emit('message', generateMessage('A new user has entered!'));
 
     // wait for particular client to send message
     // besides the payload, we declared on chat.js a callback to run from here
@@ -46,7 +47,7 @@ io.on('connection', (socket) => {
 
         // no profanity: emit the message to everyone and call the callback without any argument
         // just for the sake of acknowledgement
-        io.emit('message', msg);
+        io.emit('message', generateMessage(msg));
         callback();
 
     });
@@ -60,7 +61,7 @@ io.on('connection', (socket) => {
 
     // register event for when that particular user disconnects
     socket.on('disconnect', () => {
-        io.emit('message', 'A user has left!');
+        io.emit('message', generateMessage('A user has left!'));
     });
 
 });

@@ -82,13 +82,14 @@ $sendLocation.addEventListener('click', () => {
 });
 
 // listen for the 'message' event and log the message
-socket.on('message', (msg) => {
+socket.on('message', ({ msg, createdAt }) => {
 
     console.log(msg);
 
     // get html from the message template, pass an object which identifies
     // the dynamic variables to receive some value
-    const html = Mustache.render(msgTemplate, { msg });
+    // we use the moment library to format the date we get as an input
+    const html = Mustache.render(msgTemplate, { msg, createdAt: moment(createdAt).format('h:mm a') });
 
     // insert the rendered html into the messages div
     $messages.insertAdjacentHTML('beforeend', html);
