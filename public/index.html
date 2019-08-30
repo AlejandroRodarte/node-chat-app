@@ -10,45 +10,74 @@
 
         <title>Chat App</title>
 
+        <link rel="icon" href="/img/favicon.png">
+        <link rel="stylesheet" href="/css/styles.min.css">
+
     </head>
 
     <body>
 
-        <h1>
-            Chat App
-        </h1>
+        <div class="chat">
 
-        <!-- div to store all messages dynamically -->
-        <div id="messages">
+            <div class="chat__sidebar">
+
+            </div>
+
+            <div class="chat__main">
+
+                <!-- div to store all messages dynamically -->
+                <div id="messages" class="chat__messages">
+        
+                </div>
+
+                <div class="compose">
+
+                    <form id="msg-form">
+            
+                        <input  type="text" 
+                                name="msg" 
+                                id="msg"
+                                placeholder="Message">
+                        
+                        <button type="submit"
+                                id="msg-submit">
+                            Send
+                        </button>
+            
+                    </form>
+                    
+                    <button id="send-location">
+                        Send location
+                    </button>
+
+                </div>
+        
+            </div>
 
         </div>
-
-        <form id="msg-form">
-
-            <input  type="text" 
-                    name="msg" 
-                    id="msg"
-                    placeholder="Message">
-            
-            <button type="submit"
-                    id="msg-submit">
-                Send
-            </button>
-
-        </form>
-
-        <button id="send-location">
-            Send location
-        </button>
 
         <!-- dynamic template for chat messages -->
         <script id="message-template",
                 type="text/html">
 
-            <div>
+            <div class="message">
+
                 <p>
-                    {{ createdAt }} : {{ msg }}
+
+                    <span class="message__name">
+                        Some User Name
+                    </span>
+
+                    <span class="message__meta">
+                        {{ createdAt }}
+                    </span>
+
+                </p>
+
+                <p>
+                    {{ msg }}
                 </p>    
+
             </div>
 
         </script>
@@ -58,13 +87,27 @@
                 type="text/html">
 
             <div>
+
                 <p>
-                    {{ createdAt }} : 
+
+                    <span class="message__name">
+                        Some User Name
+                    </span>
+
+                    <span class="message__meta">
+                        {{ createdAt }}
+                    </span>
+
+                </p>
+
+
+                <p>
                     <a href="{{ url }}"
                         target="_blank">
                         My current location
                     </a>
-                </p>    
+                </p>  
+
             </div>
 
         </script>
