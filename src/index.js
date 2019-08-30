@@ -3,7 +3,7 @@ const http = require('http');
 const path = require('path');
 const socketio = require('socket.io');
 const Filter = require('bad-words');
-const { generateMessage } = require('./utils/messages');
+const { generateMessage, generateLocationMessage } = require('./utils/messages');
 
 // express app
 const app = express();
@@ -54,8 +54,9 @@ io.on('connection', (socket) => {
 
     // listen for the 'sendLocation' event and emit a new 'locationMessage' event for all users to know
     // besides the payload, we set up a callback on the client for acknowledgement
+    // use the helper method to send an object with the url and a timestamp
     socket.on('sendLocation', ({ latitude, longitude }, callback) => {
-        io.emit('locationMessage', `https://google.com/maps?q=${latitude},${longitude}`);
+        io.emit('locationMessage', generateLocationMessage(`https://google.com/maps?q=${latitude},${longitude}`));
         callback();
     });
 

@@ -1,3 +1,4 @@
+// generate object with message and timestamp
 const generateMessage = (msg) => {
     return {
         msg,
@@ -5,6 +6,16 @@ const generateMessage = (msg) => {
     }
 };
 
+// generate object with location url and timestamp
+const generateLocationMessage = (url) => {
+    return {
+        url,
+        createdAt: new Date().getTime()
+    }
+};
+
+// export functions
 module.exports = {
-    generateMessage
+    generateMessage,
+    generateLocationMessage
 };

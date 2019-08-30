@@ -97,7 +97,8 @@ socket.on('message', ({ msg, createdAt }) => {
 });
 
 // listen for the 'locationMessage' event
-socket.on('locationMessage', url => {
-    const html = Mustache.render(locationTemplate, { url });
+// render the template passing the location url and the created at timestamp as dynamic data
+socket.on('locationMessage', ({ url, createdAt }) => {
+    const html = Mustache.render(locationTemplate, { url, createdAt: moment(createdAt).format('h:mm a') });
     $messages.insertAdjacentHTML('beforeend', html);
 });
