@@ -17,109 +17,45 @@
 
     <body>
 
-        <div class="chat">
+        <div class="centered-form">
 
-            <div class="chat__sidebar">
+            <div class="centered-form__box">
 
-            </div>
+                <h1>
+                    Join
+                </h1>
 
-            <div class="chat__main">
+                <form action="/chat.html">
 
-                <!-- div to store all messages dynamically -->
-                <div id="messages" class="chat__messages">
-        
-                </div>
+                    <label for="display-name">
+                        Display Name
+                    </label>
 
-                <div class="compose">
-
-                    <form id="msg-form">
-            
-                        <input  type="text" 
-                                name="msg" 
-                                id="msg"
-                                placeholder="Message">
-                        
-                        <button type="submit"
-                                id="msg-submit">
-                            Send
-                        </button>
-            
-                    </form>
+                    <input  type="text" 
+                            name="username" 
+                            id="username"
+                            placeholder="Display name"
+                            required>
                     
-                    <button id="send-location">
-                        Send location
+                    <label for="room">
+                        Room
+                    </label>
+
+                    <input  type="text" 
+                            name="room" 
+                            id="room"
+                            placeholder="Room"
+                            required>
+                    
+                    <button>
+                        Join
                     </button>
 
-                </div>
-        
+                </form>
+
             </div>
 
         </div>
-
-        <!-- dynamic template for chat messages -->
-        <script id="message-template",
-                type="text/html">
-
-            <div class="message">
-
-                <p>
-
-                    <span class="message__name">
-                        Some User Name
-                    </span>
-
-                    <span class="message__meta">
-                        {{ createdAt }}
-                    </span>
-
-                </p>
-
-                <p>
-                    {{ msg }}
-                </p>    
-
-            </div>
-
-        </script>
-
-        <!-- dynamic template for location messages -->
-        <script id="location-template",
-                type="text/html">
-
-            <div>
-
-                <p>
-
-                    <span class="message__name">
-                        Some User Name
-                    </span>
-
-                    <span class="message__meta">
-                        {{ createdAt }}
-                    </span>
-
-                </p>
-
-
-                <p>
-                    <a href="{{ url }}"
-                        target="_blank">
-                        My current location
-                    </a>
-                </p>  
-
-            </div>
-
-        </script>
-
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.6.0/qs.min.js"></script>
-
-        <!-- client side version of the socket.io library -->
-        <!-- our client-side JS code will have access to the library to set up a communication with the server -->
-        <script src="/socket.io/socket.io.js"></script>
-        <script src="/js/chat.js"></script>
         
     </body>
 

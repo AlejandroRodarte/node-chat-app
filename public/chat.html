@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+        <title>Chat App</title>
+
+        <link rel="icon" href="/img/favicon.png">
+        <link rel="stylesheet" href="/css/styles.min.css">
+
+    </head>
+
+    <body>
+
+        <div class="chat">
+
+            <div class="chat__sidebar">
+
+            </div>
+
+            <div class="chat__main">
+
+                <!-- div to store all messages dynamically -->
+                <div id="messages" class="chat__messages">
+        
+                </div>
+
+                <div class="compose">
+
+                    <form id="msg-form">
+            
+                        <input  type="text" 
+                                name="msg" 
+                                id="msg"
+                                placeholder="Message">
+                        
+                        <button type="submit"
+                                id="msg-submit">
+                            Send
+                        </button>
+            
+                    </form>
+                    
+                    <button id="send-location">
+                        Send location
+                    </button>
+
+                </div>
+        
+            </div>
+
+        </div>
+
+        <!-- dynamic template for chat messages -->
+        <script id="message-template",
+                type="text/html">
+
+            <div class="message">
+
+                <p>
+
+                    <span class="message__name">
+                        Some User Name
+                    </span>
+
+                    <span class="message__meta">
+                        {{ createdAt }}
+                    </span>
+
+                </p>
+
+                <p>
+                    {{ msg }}
+                </p>    
+
+            </div>
+
+        </script>
+
+        <!-- dynamic template for location messages -->
+        <script id="location-template",
+                type="text/html">
+
+            <div>
+
+                <p>
+
+                    <span class="message__name">
+                        Some User Name
+                    </span>
+
+                    <span class="message__meta">
+                        {{ createdAt }}
+                    </span>
+
+                </p>
+
+
+                <p>
+                    <a href="{{ url }}"
+                        target="_blank">
+                        My current location
+                    </a>
+                </p>  
+
+            </div>
+
+        </script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.6.0/qs.min.js"></script>
+
+        <!-- client side version of the socket.io library -->
+        <!-- our client-side JS code will have access to the library to set up a communication with the server -->
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/js/chat.js"></script>
+        
+    </body>
+
+</html>
