@@ -15,6 +15,17 @@ const $messages = document.querySelector('#messages');
 const msgTemplate = document.querySelector('#message-template').innerHTML;
 const locationTemplate = document.querySelector('#location-template').innerHTML;
 
+// getting query string param values
+// Qs.parse() parses the query string from the URl into an object
+// location.search provides the raw query string to parse
+// we use destructuring to fetch each param value individually
+// this code runs whenever the chat.html is loaded
+const { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true });
+
+// remember, this code runs whenever chat.html is loaded, so we immediately emit a 'join'
+// event for the server to listen with the username and room to join
+socket.emit('join', { username, room });
+
 // event on submission: emit 'sendMessage' event with the input value
 $msgForm.addEventListener('submit', e => {
 

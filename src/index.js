@@ -27,12 +27,6 @@ app.use(express.static(publicDir));
 // where the 'socket' argument contains information about that client connection
 io.on('connection', (socket) => {
 
-    // emit welcome message for particular user (now with the timestamp)
-    socket.emit('message', generateMessage('Welcome!'));
-
-    // use socket.broadcast() to emit an event to all clients but that particular connection
-    socket.broadcast.emit('message', generateMessage('A new user has entered!'));
-
     // wait for particular client to send message
     // besides the payload, we declared on chat.js a callback to run from here
     socket.on('sendMessage', (msg, callback) => {
@@ -63,6 +57,20 @@ io.on('connection', (socket) => {
     // register event for when that particular user disconnects
     socket.on('disconnect', () => {
         io.emit('message', generateMessage('A user has left!'));
+    });
+
+    // listener for the 'join' event by the client: comes with the username and room to join
+    socket.on('join', ({ username, room }) => {
+
+        // use socket.join() to use that client socket and attach it to that particular toom
+        socket.join(room);
+
+        // emit welcome message for particular user (now with the timestamp)
+        socket.emit('message', generateMessage('Welcome!'));
+
+        // use socket.broadcast().to() to emit an event to all clients in that room but that particular connection
+        socket.broadcast.to(room).emit('message', generateMessage(`${username} has joined!`));
+
     });
 
 });
