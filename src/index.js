@@ -4,6 +4,7 @@ const path = require('path');
 const socketio = require('socket.io');
 const Filter = require('bad-words');
 const { generateMessage, generateLocationMessage } = require('./utils/messages');
+const { addUser, removeUser, getUser, getUsersInRoom } = require('./utils/users');
 
 // express app
 const app = express();
@@ -56,20 +57,41 @@ io.on('connection', (socket) => {
 
     // register event for when that particular user disconnects
     socket.on('disconnect', () => {
-        io.emit('message', generateMessage('A user has left!'));
+
+        // remove the user from the users model through the socket id
+        const { error, user } = removeUser(socket.id);
+
+        // if we get the deleted user, it means the operation was successful, so use the deleted user's
+        // room to emit a message to those roome users that the user left
+        if (user) {
+            io.to(user.room).emit('message', generateMessage(`${user.username} has left!`));
+        }
+
     });
 
     // listener for the 'join' event by the client: comes with the username and room to join
-    socket.on('join', ({ username, room }) => {
+    socket.on('join', ({ username, room }, callback) => {
 
-        // use socket.join() to use that client socket and attach it to that particular toom
-        socket.join(room);
+        // attempt to add the user; the id comes from the socket object itself
+        // remember, this method returns either an 'error' or a 'user' object
+        const { error, user } = addUser({ id: socket.id, username, room });
+
+        // if an error was indeed thrown, call the client's callback with that error
+        if (error) {
+            return callback(error);
+        }
+
+        // use socket.join() to use that client socket and attach it to that particular room
+        socket.join(user.room);
 
         // emit welcome message for particular user (now with the timestamp)
         socket.emit('message', generateMessage('Welcome!'));
 
         // use socket.broadcast().to() to emit an event to all clients in that room but that particular connection
-        socket.broadcast.to(room).emit('message', generateMessage(`${username} has joined!`));
+        socket.broadcast.to(user.room).emit('message', generateMessage(`${user.username} has joined!`));
+
+        // acknowledge the client
+        callback();
 
     });
 

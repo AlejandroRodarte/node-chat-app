@@ -24,7 +24,16 @@ const { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true }
 
 // remember, this code runs whenever chat.html is loaded, so we immediately emit a 'join'
 // event for the server to listen with the username and room to join
-socket.emit('join', { username, room });
+socket.emit('join', { username, room }, (err) => {
+
+    // callback called by server for ackwnoledgement
+    // if an error was provided: redirect user to index.html
+    if (err) {
+        alert(err);
+        location.href = '/';
+    }
+
+});
 
 // event on submission: emit 'sendMessage' event with the input value
 $msgForm.addEventListener('submit', e => {

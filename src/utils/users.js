@@ -48,7 +48,7 @@ const removeUser = (id) => {
     // delete user with splice(), since we delete only one element
     // and splice() returns an array of deleted elements, we have access to it
     // on index 0
-    return users.splice(index, 1)[0];
+    return { user: users.splice(index, 1)[0] };
 
 };
 
