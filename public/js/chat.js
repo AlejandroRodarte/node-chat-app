@@ -24,6 +24,43 @@ const sidebarTemplate = document.querySelector('#sidebar-template').innerHTML;
 // this code runs whenever the chat.html is loaded
 const { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true });
 
+// autoscroll logic
+const autoscroll = () => {
+
+    // 1. get the new message element from the messages parent element
+    const $newMessage = $messages.lastElementChild;
+
+    // 2. determine how tall the message is (including the margin)
+
+    // 2a. get the styles from the new message element
+    const newMessageStyles = getComputedStyle($newMessage);
+
+    // 2b. from the styles, get the margin we applied to the element (just margin bottom)
+    const newMessageMargin = parseInt(newMessageStyles.marginBottom);
+
+    // 2c. get new message height (with margin added)
+    const newMessageHeight = $newMessage.offsetHeight + newMessageMargin;
+
+    // 3. get the height of the messages container that IS VISIBLE through the browser
+    const visibleHeight = $messages.offsetHeight;
+
+    // 4. get the FULL HEIGHT of the messages container (including the one we can't see through the browser)
+    const containerHeight = $messages.scrollHeight;
+
+    // 5. get the amount of distance we have scrolled from the top of the messages container
+    // if we are on the top of the scroll, scrollTop returns 0
+    // if we are on the bottom of the scroll, its value with the visibleHeight added would match the previous container height
+    const scrollOffset = $messages.scrollTop + visibleHeight;
+
+    // 6. test if the user is at the bottom of the scroll
+    // if the current scroll offset plus the new message height match in pixels the new container height, it means the user
+    // is at the bottom of the scroll
+    if (scrollOffset + newMessageHeight === containerHeight) {
+        $messages.scrollTop = $messages.scrollHeight;
+    }
+    
+};
+
 // remember, this code runs whenever chat.html is loaded, so we immediately emit a 'join'
 // event for the server to listen with the username and room to join
 socket.emit('join', { username, room }, (err) => {
@@ -116,13 +153,18 @@ socket.on('message', ({ username, msg, createdAt }) => {
     // insert the rendered html into the messages div
     $messages.insertAdjacentHTML('beforeend', html);
 
+    // finally, autoscroll
+    autoscroll();
+
 });
 
 // listen for the 'locationMessage' event
 // render the template passing the location url and the created at timestamp as dynamic data
+// finally, autoscroll
 socket.on('locationMessage', ({ username, url, createdAt }) => {
     const html = Mustache.render(locationTemplate, { username, url, createdAt: moment(createdAt).format('h:mm a') });
     $messages.insertAdjacentHTML('beforeend', html);
+    autoscroll();
 });
 
 // listen for 'roomData' from server; render html based on the sidebar template and use dynamic content
