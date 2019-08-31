@@ -34,10 +34,13 @@
 
                     <form id="msg-form">
             
+                        <!-- remove autocomplete functionality -->
                         <input  type="text" 
                                 name="msg" 
                                 id="msg"
-                                placeholder="Message">
+                                placeholder="Message"
+                                required
+                                autocomplete="off">
                         
                         <button type="submit"
                                 id="msg-submit">
@@ -65,7 +68,7 @@
                 <p>
 
                     <span class="message__name">
-                        Some User Name
+                        {{ username }}
                     </span>
 
                     <span class="message__meta">
@@ -91,7 +94,7 @@
                 <p>
 
                     <span class="message__name">
-                        Some User Name
+                        {{ username }}
                     </span>
 
                     <span class="message__meta">

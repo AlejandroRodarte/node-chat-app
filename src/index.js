@@ -40,9 +40,13 @@ io.on('connection', (socket) => {
             return callback('Profanity is not allowed!');
         }
 
+        // get user and just access its room and username property
+        const { username, room } = getUser(socket.id);
+
         // no profanity: emit the message to everyone and call the callback without any argument
         // just for the sake of acknowledgement
-        io.emit('message', generateMessage(msg));
+        // now send also the username as part of the final generated message
+        io.to(room).emit('message', generateMessage(username, msg));
         callback();
 
     });
@@ -51,8 +55,14 @@ io.on('connection', (socket) => {
     // besides the payload, we set up a callback on the client for acknowledgement
     // use the helper method to send an object with the url and a timestamp
     socket.on('sendLocation', ({ latitude, longitude }, callback) => {
-        io.emit('locationMessage', generateLocationMessage(`https://google.com/maps?q=${latitude},${longitude}`));
+
+        // get user and just access its room and username property
+        const { username, room } = getUser(socket.id);
+
+        // this is a message from a particular user, so attach as username the one we fetched
+        io.to(room).emit('locationMessage', generateLocationMessage(username, `https://google.com/maps?q=${latitude},${longitude}`));
         callback();
+
     });
 
     // register event for when that particular user disconnects
@@ -63,8 +73,9 @@ io.on('connection', (socket) => {
 
         // if we get the deleted user, it means the operation was successful, so use the deleted user's
         // room to emit a message to those roome users that the user left
+        // this is a system message, so set the username as 'admin'
         if (user) {
-            io.to(user.room).emit('message', generateMessage(`${user.username} has left!`));
+            io.to(user.room).emit('message', generateMessage('admin', `${user.username} has left!`));
         }
 
     });
@@ -84,11 +95,15 @@ io.on('connection', (socket) => {
         // use socket.join() to use that client socket and attach it to that particular room
         socket.join(user.room);
 
+        console.log(user.username);
+
         // emit welcome message for particular user (now with the timestamp)
-        socket.emit('message', generateMessage('Welcome!'));
+        // this is a system message, so attach 'admin' as username
+        socket.emit('message', generateMessage('admin', 'Welcome!'));
 
         // use socket.broadcast().to() to emit an event to all clients in that room but that particular connection
-        socket.broadcast.to(user.room).emit('message', generateMessage(`${user.username} has joined!`));
+        // this is a system message, so attach 'admin' as username
+        socket.broadcast.to(user.room).emit('message', generateMessage('admin', `${user.username} has joined!`));
 
         // acknowledge the client
         callback();
