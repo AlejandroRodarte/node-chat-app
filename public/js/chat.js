@@ -10,10 +10,12 @@ const $msg = document.querySelector('#msg');
 const $msgSubmit = document.querySelector('#msg-submit')
 const $sendLocation = document.querySelector('#send-location');
 const $messages = document.querySelector('#messages');
+const $sidebar = document.querySelector('#sidebar');
 
 // target templates
 const msgTemplate = document.querySelector('#message-template').innerHTML;
 const locationTemplate = document.querySelector('#location-template').innerHTML;
+const sidebarTemplate = document.querySelector('#sidebar-template').innerHTML;
 
 // getting query string param values
 // Qs.parse() parses the query string from the URl into an object
@@ -121,4 +123,11 @@ socket.on('message', ({ username, msg, createdAt }) => {
 socket.on('locationMessage', ({ username, url, createdAt }) => {
     const html = Mustache.render(locationTemplate, { username, url, createdAt: moment(createdAt).format('h:mm a') });
     $messages.insertAdjacentHTML('beforeend', html);
+});
+
+// listen for 'roomData' from server; render html based on the sidebar template and use dynamic content
+// given by the server (the room name and the array of users)
+socket.on('roomData', ({ room, users }) => {
+    const html = Mustache.render(sidebarTemplate, { room, users });
+    $sidebar.innerHTML = html;
 });

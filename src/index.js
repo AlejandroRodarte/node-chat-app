@@ -75,7 +75,16 @@ io.on('connection', (socket) => {
         // room to emit a message to those roome users that the user left
         // this is a system message, so set the username as 'admin'
         if (user) {
+
             io.to(user.room).emit('message', generateMessage('admin', `${user.username} has left!`));
+
+            // emit data on 'roomData' event: an object with the room name and the users in that room
+            // after deleting the user
+            io.to(user.room).emit('roomData', { 
+                room: user.room,
+                users: getUsersInRoom(user.room)
+            });
+
         }
 
     });
@@ -104,6 +113,13 @@ io.on('connection', (socket) => {
         // use socket.broadcast().to() to emit an event to all clients in that room but that particular connection
         // this is a system message, so attach 'admin' as username
         socket.broadcast.to(user.room).emit('message', generateMessage('admin', `${user.username} has joined!`));
+
+        // emit data on 'roomData' event: an object with the room name and the users in that room
+        // after adding the user
+        io.to(user.room).emit('roomData', { 
+            room: user.room,
+            users: getUsersInRoom(user.room)
+        });
 
         // acknowledge the client
         callback();
